@@ -62,6 +62,7 @@ public final class UltimateDonutSmp extends JavaPlugin {
     private WarpManager warpManager;
     private CuboidManager cuboidManager;
     private SpawnManager spawnManager;
+    private SpawnHologramManager spawnHologramManager;
     private CombatManager combatManager;
     private FastCrystalManager fastCrystalManager;
     private TPAManager tpaManager;
@@ -198,6 +199,8 @@ public final class UltimateDonutSmp extends JavaPlugin {
 
         spawnManager = new SpawnManager(this);
         spawnManager.load();
+        spawnHologramManager = new SpawnHologramManager(this);
+        spawnHologramManager.load();
 
         // 3. Gameplay managers
         combatManager = new CombatManager(this);
@@ -354,6 +357,9 @@ public final class UltimateDonutSmp extends JavaPlugin {
     @Override
     public void onDisable() {
         com.bx.ultimateDonutSmp.managers.SellStatsExporter.stopEmbeddedHttpServer();
+        if (spawnHologramManager != null) {
+            spawnHologramManager.shutdown();
+        }
         boolean suppressWipeSaves = serverWipeManager != null
                 && serverWipeManager.shouldSuppressShutdownSaves();
         if (teleportManager != null) {
@@ -577,6 +583,7 @@ public final class UltimateDonutSmp extends JavaPlugin {
         pm.registerEvents(new SpawnerBlockListener(this), this);
         pm.registerEvents(new SpawnerInteractListener(this), this);
         pm.registerEvents(new SpawnStashListener(this), this);
+        pm.registerEvents(new SpawnProtectionListener(this), this);
         pm.registerEvents(new PunishmentCommandAliasListener(this), this);
         pm.registerEvents(new AnvilModerationListener(this), this);
         pm.registerEvents(new PlayerAdvancementDoneListener(this), this);
@@ -621,6 +628,12 @@ public final class UltimateDonutSmp extends JavaPlugin {
         setExecutor("afk", new AFKCommand(this), FeatureManager.Feature.AFK);
         setExecutor("setspawn", new SetSpawnCommand(this), FeatureManager.Feature.SPAWN);
         setExecutor("setafk", new SetAfkCommand(this), FeatureManager.Feature.AFK);
+        setExecutor("setafkarea", new SetAfkAreaCommand(this), FeatureManager.Feature.AFK);
+        SetHologramCommand setHologramCommand = new SetHologramCommand(this);
+        setExecutor("sethologram", setHologramCommand);
+        if (getCommand("sethologram") != null) {
+            getCommand("sethologram").setTabCompleter(setHologramCommand);
+        }
 
         // Teleport
         TPACommand tpaCmd = new TPACommand(this);
@@ -1285,6 +1298,10 @@ public final class UltimateDonutSmp extends JavaPlugin {
 
     public SpawnManager getSpawnManager() {
         return spawnManager;
+    }
+
+    public SpawnHologramManager getSpawnHologramManager() {
+        return spawnHologramManager;
     }
 
     public SpawnStashManager getSpawnStashManager() {
