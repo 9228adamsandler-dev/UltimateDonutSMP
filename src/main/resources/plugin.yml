@@ -109,6 +109,16 @@ commands:
     usage: /setafk
     permission: ultimatedonutsmp.command.setafk
     permission-message: "&cYou do not have permission to use /setafk."
+  setafkarea:
+    description: Set the shard AFK area location
+    usage: /setafkarea
+    permission: ultimatedonutsmp.command.setafkarea
+    permission-message: "&cYou do not have permission to use /setafkarea."
+  sethologram:
+    description: Set spawn hologram locations (welcome, store, duels, baltop)
+    usage: /sethologram <welcome|store|duels|baltop|clear> [type]
+    permission: ultimatedonutsmp.command.sethologram
+    permission-message: "&cYou do not have permission to use /sethologram."
   rtp:
     description: Random teleport
     usage: /rtp [world]
@@ -811,11 +821,15 @@ commands:
     permission: ultimatedonutsmp.staff.god
     permission-message: "&cYou do not have permission to use /god."
 permissions:
+  ultimatedonutsmp.spawn.bypass:
+    description: Bypass hard spawn protection (build/break/damage/interact)
+    default: false
   ultimatedonutsmp.admin:
     description: Full admin access
     default: op
     children:
       ultimatedonutsmp.command.*: true
+      ultimatedonutsmp.spawn.bypass: true
       ultimatedonutsmp.admin.shop: true
       ultimatedonutsmp.admin.orders: true
       ultimatedonutsmp.admin.duels: true
@@ -1298,6 +1312,8 @@ permissions:
       ultimatedonutsmp.command.setspawn: true
       ultimatedonutsmp.command.afk: true
       ultimatedonutsmp.command.setafk: true
+      ultimatedonutsmp.command.setafkarea: true
+      ultimatedonutsmp.command.sethologram: true
       ultimatedonutsmp.command.rtp: true
       ultimatedonutsmp.command.rtpq: true
       ultimatedonutsmp.command.shop: true
